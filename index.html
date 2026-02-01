@@ -104,52 +104,62 @@
     </div>
 
     <script>
-        const noBtn = document.getElementById('no-btn');
-        const yesBtn = document.getElementById('yes-btn');
-        const buttonArea = document.getElementById('button-area');
+    const noBtn = document.getElementById('no-btn');
+    const yesBtn = document.getElementById('yes-btn');
+    const buttonArea = document.getElementById('button-area');
 
-        let scale = 1; 
-        let moveCount = 0; 
+    let scale = 1; 
+    let moveCount = 0; 
 
-        function moveButton() {
-            moveCount++;
-            if (moveCount >= 10) {
-                noBtn.style.display = 'none';
-                return;
-            }
-            if (noBtn.style.position !== 'absolute') {
-                noBtn.style.position = 'absolute';
-                noBtn.style.margin = '0';
-            }
-            const areaWidth = buttonArea.offsetWidth;
-            const areaHeight = buttonArea.offsetHeight;
-            const randomX = Math.floor(Math.random() * (areaWidth - noBtn.offsetWidth));
-            const randomY = Math.floor(Math.random() * (areaHeight - noBtn.offsetHeight));
-            
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
-
-            if (scale < 2.5) {
-                scale += 0.2; 
-                yesBtn.style.transform = `scale(${scale})`;
-            }
+    // This handles moving, growing, and disappearing for BOTH touch and mouse
+    function handleNoAction(e) {
+        // Stop mobile from accidental clicking or zooming
+        if (e.type === 'touchstart') {
+            e.preventDefault(); 
         }
 
-        // Works for desktop mouse
-        noBtn.addEventListener('mouseover', moveButton);
-        
-        // Works for mobile touch - moves before the "click" happens
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents the actual click/tap from triggering
-            moveButton();
-        });
+        moveCount++;
 
-        yesBtn.addEventListener('click', () => {
-            document.getElementById('main-container').innerHTML = `
-                <h1 style="margin-top:20px; color:#e91e63;">Yay! See you then! ❤️❤️</h1>
-                <img src="me.jpeg" style="width:100%; max-height:350px; object-fit:contain; border-radius:15px; margin-top:20px;" onerror="this.src='me.jpg'">
-            `;
-        });
+        // 1. VANISH: After 10 attempts, the No button disappears
+        if (moveCount >= 10) {
+            noBtn.style.display = 'none';
+            return;
+        }
+
+        // 2. MOVEMENT: Teleport inside the white box
+        if (noBtn.style.position !== 'absolute') {
+            noBtn.style.position = 'absolute';
+            noBtn.style.margin = '0';
+        }
+
+        const areaWidth = buttonArea.offsetWidth;
+        const areaHeight = buttonArea.offsetHeight;
+        
+        const randomX = Math.floor(Math.random() * (areaWidth - noBtn.offsetWidth));
+        const randomY = Math.floor(Math.random() * (areaHeight - noBtn.offsetHeight));
+
+        noBtn.style.left = `${randomX}px`;
+        noBtn.style.top = `${randomY}px`;
+
+        // 3. GROWTH: Yes button expands (cap at 2.5x)
+        if (scale < 2.5) {
+            scale += 0.2; 
+            yesBtn.style.transform = `scale(${scale})`;
+        }
+    }
+
+    // Connect the function to the device actions
+    noBtn.addEventListener('mouseover', handleNoAction);
+    noBtn.addEventListener('touchstart', handleNoAction);
+
+    // Final Page Success Screen
+    yesBtn.addEventListener('click', () => {
+        document.getElementById('main-container').innerHTML = `
+            <h1 style="margin-top:20px; color:#e91e63;">Good Girl! Daddy Loves you! ❤️❤️</h1>
+            <img src="me.jpeg" style="width:100%; max-height:350px; object-fit:contain; border-radius:15px; margin-top:20px;" onerror="this.src='me.jpg'">
+        `;
+    });
     </script>
 </body>
+
 </html>
