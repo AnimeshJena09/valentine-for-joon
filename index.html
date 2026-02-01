@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you be my Valentine?</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fce4ec; 
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; 
+            touch-action: manipulation; /* Prevents accidental zooming on mobile */
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            width: 90%; /* Responsive width for mobile */
+            max-width: 450px;
+            position: relative; 
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #my-photo {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain; 
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .button-playground {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 15px 30px; /* Slightly larger buttons for easier tapping */
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        #yes-btn {
+            background-color: #e91e63;
+            color: white;
+            transition: transform 0.2s ease;
+            z-index: 5;
+        }
+
+        #no-btn {
+            background-color: #efefef;
+            color: #666;
+            transition: all 0.1s ease;
+            z-index: 6; 
+        }
+
+        .footer-text {
+            margin-top: auto; 
+            font-size: 13px;
+            color: #999;
+            font-style: italic;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        <img src="me.jpeg" id="my-photo" alt="Us" onerror="this.src='me.jpg'">
+        
+        <h1>Joon will you be my valentine? ❤️❤️</h1>
+
+        <div class="button-playground" id="button-area">
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn" style="margin-left: 20px;">No</button>
+        </div>
+
+        <p class="footer-text">"No" seems a bit shy ✨</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const buttonArea = document.getElementById('button-area');
+
+        let scale = 1; 
+        let moveCount = 0; 
+
+        function moveButton() {
+            moveCount++;
+            if (moveCount >= 10) {
+                noBtn.style.display = 'none';
+                return;
+            }
+            if (noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+                noBtn.style.margin = '0';
+            }
+            const areaWidth = buttonArea.offsetWidth;
+            const areaHeight = buttonArea.offsetHeight;
+            const randomX = Math.floor(Math.random() * (areaWidth - noBtn.offsetWidth));
+            const randomY = Math.floor(Math.random() * (areaHeight - noBtn.offsetHeight));
+            
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
+            if (scale < 2.5) {
+                scale += 0.2; 
+                yesBtn.style.transform = `scale(${scale})`;
+            }
+        }
+
+        // Works for desktop mouse
+        noBtn.addEventListener('mouseover', moveButton);
+        
+        // Works for mobile touch - moves before the "click" happens
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents the actual click/tap from triggering
+            moveButton();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('main-container').innerHTML = `
+                <h1 style="margin-top:20px; color:#e91e63;">Yay! See you then! ❤️❤️</h1>
+                <img src="me.jpeg" style="width:100%; max-height:350px; object-fit:contain; border-radius:15px; margin-top:20px;" onerror="this.src='me.jpg'">
+            `;
+        });
+    </script>
+</body>
+</html>
